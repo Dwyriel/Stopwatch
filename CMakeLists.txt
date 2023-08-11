@@ -3,4 +3,4 @@ project(Stopwatch)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_library(Stopwatch SHARED stopwatch.cpp)
+add_library(Stopwatch STATIC stopwatch.cpp)
