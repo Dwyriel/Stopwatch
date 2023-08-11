@@ -3,22 +3,25 @@
 
 #include <chrono>
 
-class Stopwatch{
-    bool isRunning = false;
-    std::chrono::time_point<std::chrono::high_resolution_clock> m_start, m_end;
+class Stopwatch {
+    static bool isRunning;
+    static std::chrono::time_point<std::chrono::high_resolution_clock> m_start, m_end;
 
 public:
-    void start();
+    Stopwatch() = delete;
 
-    void stop();
+    static void start();
 
-    uint64_t elapsedNanoseconds();
+    static void stop();
 
-    uint64_t elapsedMicroseconds();
 
-    uint64_t elapsedMilliseconds();
+    static double elapsedNanoseconds();
 
-    double elapsedSeconds();
+    static double elapsedMicroseconds();
+
+    static double elapsedMilliseconds();
+
+    static double elapsedSeconds();
 };
 
 #endif //STOPWATCH_STOPWATCH_H

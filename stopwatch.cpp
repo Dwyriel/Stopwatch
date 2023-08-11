@@ -1,5 +1,11 @@
 #include "stopwatch.h"
 
+bool Stopwatch::isRunning = false;
+
+std::chrono::time_point<std::chrono::high_resolution_clock> Stopwatch::m_start = std::chrono::high_resolution_clock::now();
+
+std::chrono::time_point<std::chrono::high_resolution_clock> Stopwatch::m_end = std::chrono::high_resolution_clock::now();
+
 void Stopwatch::start() {
     isRunning = true;
     m_start = std::chrono::high_resolution_clock::now();
@@ -10,29 +16,29 @@ void Stopwatch::stop() {
     isRunning = false;
 }
 
-uint64_t Stopwatch::elapsedNanoseconds() {
-    if(isRunning)
+double Stopwatch::elapsedNanoseconds() {
+    if (isRunning)
         m_end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::nano> elapsed = m_end - m_start;
-    return (uint64_t)elapsed.count();
+    return elapsed.count();
 }
 
-uint64_t Stopwatch::elapsedMicroseconds() {
-    if(isRunning)
+double Stopwatch::elapsedMicroseconds() {
+    if (isRunning)
         m_end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::micro> elapsed = m_end - m_start;
-    return (uint64_t)elapsed.count();
+    return elapsed.count();
 }
 
-uint64_t Stopwatch::elapsedMilliseconds() {
-    if(isRunning)
+double Stopwatch::elapsedMilliseconds() {
+    if (isRunning)
         m_end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> elapsed = m_end - m_start;
-    return (uint64_t)elapsed.count();
+    return elapsed.count();
 }
 
 double Stopwatch::elapsedSeconds() {
-    if(isRunning)
+    if (isRunning)
         m_end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = m_end - m_start;
     return elapsed.count();
