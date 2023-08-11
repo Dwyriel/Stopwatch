@@ -16,6 +16,13 @@ void Stopwatch::stop() {
     isRunning = false;
 }
 
+double Stopwatch::elapsedPicoseconds() {
+    if (isRunning)
+        m_end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::pico> elapsed = m_end - m_start;
+    return elapsed.count();
+}
+
 double Stopwatch::elapsedNanoseconds() {
     if (isRunning)
         m_end = std::chrono::high_resolution_clock::now();

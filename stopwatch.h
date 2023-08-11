@@ -14,6 +14,7 @@ public:
 
     static void stop();
 
+    static double elapsedPicoseconds();
 
     static double elapsedNanoseconds();
 
