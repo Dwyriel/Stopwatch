@@ -5,15 +5,19 @@
 
 template<class clock>
 class Stopwatch {
+    static const int totalOverheadCalcPasses = 10;
+
     static bool isRunning;
     static std::chrono::time_point<clock> m_start, m_end;
+    static double overheadInPico;
 
     template<typename Ratio>
     static inline double elapsedByPrecision(){
         if (isRunning)
             m_end = clock::now();
         std::chrono::duration<double, Ratio> elapsed = m_end - m_start;
-        return elapsed.count();
+        double convertedOverhead = overheadInPico * (static_cast<double>(Ratio::den) / static_cast<double>(std::pico::den));
+        return elapsed.count() - convertedOverhead;
     }
 
 public:
@@ -27,6 +31,34 @@ public:
     static void stop(){
         m_end = clock::now();
         isRunning = false;
+    }
+
+    /**
+     * <br>Should not be called after calling start() and before calling stop().
+     */
+    static void calculateOverhead() {
+        overheadInPico = 0;
+        double results[totalOverheadCalcPasses];
+        for (double &result: results) {
+            start();
+            stop();
+            result = elapsedPicoseconds();
+        }
+        double total = 0;
+        for (double result: results)
+            total += result;
+        overheadInPico = total / totalOverheadCalcPasses;
+    }
+
+    static void resetOverhead(){
+        overheadInPico = 0;
+    }
+
+    /**
+     * @return overhead in picoseconds.
+     */
+    static double overhead() {
+        return overheadInPico;
     }
 
     static double elapsedPicoseconds() {
@@ -50,9 +82,8 @@ public:
     }
 };
 
-typedef Stopwatch<std::chrono::high_resolution_clock> StopwatchHRC;
-typedef Stopwatch<std::chrono::steady_clock> StopwatchSC;
-
+typedef Stopwatch<std::chrono::high_resolution_clock> StopwatchHighRes;
+typedef Stopwatch<std::chrono::steady_clock> StopwatchSteady;
 
 template<class clock>
 bool Stopwatch<clock>::isRunning = false;
@@ -62,5 +93,8 @@ std::chrono::time_point<clock> Stopwatch<clock>::m_start = clock::now();
 
 template<class clock>
 std::chrono::time_point<clock> Stopwatch<clock>::m_end = clock::now();
+
+template<class clock>
+double Stopwatch<clock>::overheadInPico = 0;
 
 #endif //STOPWATCH_STOPWATCH_H
