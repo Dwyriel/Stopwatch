@@ -3,7 +3,7 @@
 
 #include <chrono>
 
-template<class clock>
+template<class clock = typename std::chrono::high_resolution_clock>
 class Stopwatch {
     static const int totalOverheadCalcPasses = 10;
 
