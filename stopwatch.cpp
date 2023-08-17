@@ -2,16 +2,16 @@
 
 const int totalOverheadCalcPasses = 10;
 
-bool Stopwatch::isRunning = false;
+bool StopwatchHighRes::isRunning = false;
 
-std::chrono::time_point<std::chrono::high_resolution_clock> Stopwatch::m_start = std::chrono::high_resolution_clock::now();
+std::chrono::time_point<std::chrono::high_resolution_clock> StopwatchHighRes::m_start = std::chrono::high_resolution_clock::now();
 
-std::chrono::time_point<std::chrono::high_resolution_clock> Stopwatch::m_end = std::chrono::high_resolution_clock::now();
+std::chrono::time_point<std::chrono::high_resolution_clock> StopwatchHighRes::m_end = std::chrono::high_resolution_clock::now();
 
-double Stopwatch::overheadInPico = 0;
+double StopwatchHighRes::overheadInPico = 0;
 
 template<class Ratio>
-double Stopwatch::elapsedByPrecision() {
+double StopwatchHighRes::elapsedByPrecision() {
     if (isRunning)
         m_end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, Ratio> elapsed = m_end - m_start;
@@ -19,17 +19,17 @@ double Stopwatch::elapsedByPrecision() {
     return elapsed.count() - convertedOverhead;
 }
 
-void Stopwatch::start() {
+void StopwatchHighRes::start() {
     isRunning = true;
     m_start = std::chrono::high_resolution_clock::now();
 }
 
-void Stopwatch::stop() {
+void StopwatchHighRes::stop() {
     m_end = std::chrono::high_resolution_clock::now();
     isRunning = false;
 }
 
-void Stopwatch::calculateOverhead() {
+void StopwatchHighRes::calculateOverhead() {
     overheadInPico = 0;
     double results[totalOverheadCalcPasses];
     for (double &result: results) {
@@ -43,31 +43,31 @@ void Stopwatch::calculateOverhead() {
     overheadInPico = total / totalOverheadCalcPasses;
 }
 
-void Stopwatch::resetOverhead() {
+void StopwatchHighRes::resetOverhead() {
     overheadInPico = 0;
 }
 
-double Stopwatch::overhead() {
+double StopwatchHighRes::overhead() {
     return overheadInPico;
 }
 
-double Stopwatch::elapsedPicoseconds() {
+double StopwatchHighRes::elapsedPicoseconds() {
     return elapsedByPrecision<std::pico>();
 }
 
-double Stopwatch::elapsedNanoseconds() {
+double StopwatchHighRes::elapsedNanoseconds() {
     return elapsedByPrecision<std::nano>();
 }
 
-double Stopwatch::elapsedMicroseconds() {
+double StopwatchHighRes::elapsedMicroseconds() {
     return elapsedByPrecision<std::micro>();
 }
 
-double Stopwatch::elapsedMilliseconds() {
+double StopwatchHighRes::elapsedMilliseconds() {
     return elapsedByPrecision<std::milli>();
 }
 
-double Stopwatch::elapsedSeconds() {
+double StopwatchHighRes::elapsedSeconds() {
     return elapsedByPrecision<std::ratio<1>>();
 }
 

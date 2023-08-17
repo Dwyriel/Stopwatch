@@ -4,9 +4,9 @@
 #include <chrono>
 
 /**
- * <br>Default Stopwatch, uses std::chrono::high_resolution_clock
+ * <br>Uses std::chrono::high_resolution_clock
  */
-class Stopwatch {
+class StopwatchHighRes {
     static bool isRunning;
     static std::chrono::time_point<std::chrono::high_resolution_clock> m_start, m_end;
     static double overheadInPico;
@@ -15,7 +15,7 @@ class Stopwatch {
     static inline double elapsedByPrecision();
 
 public:
-    Stopwatch() = delete;
+    StopwatchHighRes() = delete;
 
     static void start();
 
@@ -43,11 +43,6 @@ public:
 
     static double elapsedSeconds();
 };
-
-/**
- * <br>Uses std::chrono::high_resolution_clock
- */
-using StopwatchHighRes = Stopwatch;
 
 /**
  * <br>Uses std::chrono::steady_clock
@@ -89,5 +84,10 @@ public:
 
     static double elapsedSeconds();
 };
+
+/**
+ * <br>Default Stopwatch, uses std::chrono::high_resolution_clock
+ */
+using Stopwatch = StopwatchHighRes;
 
 #endif //STOPWATCH_STOPWATCH_H
