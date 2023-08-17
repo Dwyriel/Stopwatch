@@ -9,6 +9,7 @@
 class Stopwatch {
     static bool isRunning;
     static std::chrono::time_point<std::chrono::high_resolution_clock> m_start, m_end;
+    static double overheadInPico;
 
     template<class Ratio>
     static inline double elapsedByPrecision();
@@ -19,6 +20,16 @@ public:
     static void start();
 
     static void stop();
+
+    /**
+     * <br>Should not be called after calling start.
+     */
+    static void calculateOverhead();
+
+    /**
+     * In picoseconds.
+     */
+    static double overhead();
 
     static double elapsedPicoseconds();
 
@@ -42,6 +53,7 @@ using StopwatchHRC = Stopwatch;
 class StopwatchSC {
     static bool isRunning;
     static std::chrono::time_point<std::chrono::steady_clock> m_start, m_end;
+    static double overheadInPico;
 
     template<class Ratio>
     static inline double elapsedByPrecision();
@@ -52,6 +64,16 @@ public:
     static void start();
 
     static void stop();
+
+    /**
+     * <br>Should not be called after calling start.
+     */
+    static void calculateOverhead();
+
+    /**
+     * In picoseconds.
+     */
+    static double overhead();
 
     static double elapsedPicoseconds();
 

@@ -1,17 +1,22 @@
 #include "stopwatch.h"
 
+const int totalOverheadCalcPasses = 10;
+
 bool Stopwatch::isRunning = false;
 
 std::chrono::time_point<std::chrono::high_resolution_clock> Stopwatch::m_start = std::chrono::high_resolution_clock::now();
 
 std::chrono::time_point<std::chrono::high_resolution_clock> Stopwatch::m_end = std::chrono::high_resolution_clock::now();
 
+double Stopwatch::overheadInPico = 0;
+
 template<class Ratio>
 double Stopwatch::elapsedByPrecision() {
     if (isRunning)
         m_end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, Ratio> elapsed = m_end - m_start;
-    return elapsed.count();
+    double convertedOverhead = overheadInPico * (static_cast<double>(Ratio::den) / static_cast<double>(std::pico::den));
+    return elapsed.count() - convertedOverhead;
 }
 
 void Stopwatch::start() {
@@ -22,6 +27,23 @@ void Stopwatch::start() {
 void Stopwatch::stop() {
     m_end = std::chrono::high_resolution_clock::now();
     isRunning = false;
+}
+
+void Stopwatch::calculateOverhead() {
+    double results[totalOverheadCalcPasses];
+    for (double &result: results) {
+        start();
+        stop();
+        result = elapsedPicoseconds();
+    }
+    double total = 0;
+    for (double result: results)
+        total += result;
+    overheadInPico = total / totalOverheadCalcPasses;
+}
+
+double Stopwatch::overhead() {
+    return overheadInPico;
 }
 
 double Stopwatch::elapsedPicoseconds() {
@@ -50,12 +72,15 @@ std::chrono::time_point<std::chrono::steady_clock> StopwatchSC::m_start = std::c
 
 std::chrono::time_point<std::chrono::steady_clock> StopwatchSC::m_end = std::chrono::steady_clock::now();
 
+double StopwatchSC::overheadInPico = 0;
+
 template<class Ratio>
 double StopwatchSC::elapsedByPrecision() {
     if (isRunning)
         m_end = std::chrono::steady_clock::now();
     std::chrono::duration<double, Ratio> elapsed = m_end - m_start;
-    return elapsed.count();
+    double convertedOverhead = overheadInPico * (static_cast<double>(Ratio::den) / static_cast<double>(std::pico::den));
+    return elapsed.count() - convertedOverhead;
 }
 
 void StopwatchSC::start() {
@@ -66,6 +91,23 @@ void StopwatchSC::start() {
 void StopwatchSC::stop() {
     m_end = std::chrono::steady_clock::now();
     isRunning = false;
+}
+
+void StopwatchSC::calculateOverhead() {
+    double results[totalOverheadCalcPasses];
+    for (double &result: results) {
+        start();
+        stop();
+        result = elapsedPicoseconds();
+    }
+    double total = 0;
+    for (double result: results)
+        total += result;
+    overheadInPico = total / totalOverheadCalcPasses;
+}
+
+double StopwatchSC::overhead() {
+    return overheadInPico;
 }
 
 double StopwatchSC::elapsedPicoseconds() {
