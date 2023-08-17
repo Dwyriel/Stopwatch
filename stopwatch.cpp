@@ -30,6 +30,7 @@ void Stopwatch::stop() {
 }
 
 void Stopwatch::calculateOverhead() {
+    overheadInPico = 0;
     double results[totalOverheadCalcPasses];
     for (double &result: results) {
         start();
@@ -40,6 +41,10 @@ void Stopwatch::calculateOverhead() {
     for (double result: results)
         total += result;
     overheadInPico = total / totalOverheadCalcPasses;
+}
+
+void Stopwatch::resetOverhead() {
+    overheadInPico = 0;
 }
 
 double Stopwatch::overhead() {
@@ -66,16 +71,16 @@ double Stopwatch::elapsedSeconds() {
     return elapsedByPrecision<std::ratio<1>>();
 }
 
-bool StopwatchSC::isRunning = false;
+bool StopwatchSteady::isRunning = false;
 
-std::chrono::time_point<std::chrono::steady_clock> StopwatchSC::m_start = std::chrono::steady_clock::now();
+std::chrono::time_point<std::chrono::steady_clock> StopwatchSteady::m_start = std::chrono::steady_clock::now();
 
-std::chrono::time_point<std::chrono::steady_clock> StopwatchSC::m_end = std::chrono::steady_clock::now();
+std::chrono::time_point<std::chrono::steady_clock> StopwatchSteady::m_end = std::chrono::steady_clock::now();
 
-double StopwatchSC::overheadInPico = 0;
+double StopwatchSteady::overheadInPico = 0;
 
 template<class Ratio>
-double StopwatchSC::elapsedByPrecision() {
+double StopwatchSteady::elapsedByPrecision() {
     if (isRunning)
         m_end = std::chrono::steady_clock::now();
     std::chrono::duration<double, Ratio> elapsed = m_end - m_start;
@@ -83,17 +88,18 @@ double StopwatchSC::elapsedByPrecision() {
     return elapsed.count() - convertedOverhead;
 }
 
-void StopwatchSC::start() {
+void StopwatchSteady::start() {
     isRunning = true;
     m_start = std::chrono::steady_clock::now();
 }
 
-void StopwatchSC::stop() {
+void StopwatchSteady::stop() {
     m_end = std::chrono::steady_clock::now();
     isRunning = false;
 }
 
-void StopwatchSC::calculateOverhead() {
+void StopwatchSteady::calculateOverhead() {
+    overheadInPico = 0;
     double results[totalOverheadCalcPasses];
     for (double &result: results) {
         start();
@@ -106,26 +112,30 @@ void StopwatchSC::calculateOverhead() {
     overheadInPico = total / totalOverheadCalcPasses;
 }
 
-double StopwatchSC::overhead() {
+void StopwatchSteady::resetOverhead() {
+    overheadInPico = 0;
+}
+
+double StopwatchSteady::overhead() {
     return overheadInPico;
 }
 
-double StopwatchSC::elapsedPicoseconds() {
+double StopwatchSteady::elapsedPicoseconds() {
     return elapsedByPrecision<std::pico>();
 }
 
-double StopwatchSC::elapsedNanoseconds() {
+double StopwatchSteady::elapsedNanoseconds() {
     return elapsedByPrecision<std::nano>();
 }
 
-double StopwatchSC::elapsedMicroseconds() {
+double StopwatchSteady::elapsedMicroseconds() {
     return elapsedByPrecision<std::micro>();
 }
 
-double StopwatchSC::elapsedMilliseconds() {
+double StopwatchSteady::elapsedMilliseconds() {
     return elapsedByPrecision<std::milli>();
 }
 
-double StopwatchSC::elapsedSeconds() {
+double StopwatchSteady::elapsedSeconds() {
     return elapsedByPrecision<std::ratio<1>>();
 }

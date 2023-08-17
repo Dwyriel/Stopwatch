@@ -26,8 +26,10 @@ public:
      */
     static void calculateOverhead();
 
+    static void resetOverhead();
+
     /**
-     * In picoseconds.
+     * @return overhead in picoseconds.
      */
     static double overhead();
 
@@ -45,12 +47,12 @@ public:
 /**
  * <br>Uses std::chrono::high_resolution_clock
  */
-using StopwatchHRC = Stopwatch;
+using StopwatchHighRes = Stopwatch;
 
 /**
  * <br>Uses std::chrono::steady_clock
  */
-class StopwatchSC {
+class StopwatchSteady {
     static bool isRunning;
     static std::chrono::time_point<std::chrono::steady_clock> m_start, m_end;
     static double overheadInPico;
@@ -59,7 +61,7 @@ class StopwatchSC {
     static inline double elapsedByPrecision();
 
 public:
-    StopwatchSC() = delete;
+    StopwatchSteady() = delete;
 
     static void start();
 
@@ -70,8 +72,10 @@ public:
      */
     static void calculateOverhead();
 
+    static void resetOverhead();
+
     /**
-     * In picoseconds.
+     * @return overhead in picoseconds.
      */
     static double overhead();
 
